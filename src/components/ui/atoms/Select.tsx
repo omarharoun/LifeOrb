@@ -23,6 +23,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           className={[
             'w-full px-4 py-3 rounded-lg outline-none transition-all bg-white',
             'border',
+            'text-gray-900',
             error ? 'border-red-500 focus:ring-2 focus:ring-red-500' : 'border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent',
             className || '',
           ].join(' ')}
