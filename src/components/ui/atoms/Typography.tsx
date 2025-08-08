@@ -83,4 +83,5 @@ export const Text: React.FC<React.PropsWithChildren<TextProps>> = ({
   </p>
 )
 
-export default { Heading, Text }
+const Typography = { Heading, Text }
+export default Typography
