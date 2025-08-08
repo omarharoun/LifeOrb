@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
 interface LifeParameter {
@@ -38,6 +38,56 @@ export default function LifeParametersForm({ onComplete }: LifeParametersFormPro
     { id: 'values', label: 'Core Values', type: 'multiselect', options: ['Family', 'Career', 'Adventure', 'Security', 'Creativity', 'Impact', 'Freedom', 'Learning'], value: [] },
     { id: 'lifestyle_preferences', label: 'Lifestyle Preferences', type: 'multiselect', options: ['Urban', 'Suburban', 'Rural', 'Travel', 'Remote Work', 'Community Focused'], value: [] },
   ])
+
+  // Persist form state per browser (anonymous-by-design)
+  const STORAGE_KEY = 'lifeorb:parameters:v1'
+  const hydratedRef = useRef(false)
+
+  // Load saved values on mount and merge into defaults
+  useEffect(() => {
+    try {
+      const raw = typeof window !== 'undefined' ? window.localStorage.getItem(STORAGE_KEY) : null
+      if (raw) {
+        const saved = JSON.parse(raw) as {
+          values: Record<string, any>
+          currentSection?: number
+        }
+        if (saved && saved.values) {
+          setParameters(prev => prev.map(p => ({ ...p, value: saved.values[p.id] ?? p.value })))
+        }
+        if (typeof saved?.currentSection === 'number') {
+          setCurrentSection(s => {
+            const total = 3 // number of sections below
+            const clamped = Math.min(Math.max(saved.currentSection!, 0), total - 1)
+            return clamped
+          })
+        }
+      }
+    } catch {
+      // ignore malformed storage
+    } finally {
+      hydratedRef.current = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Save on change (debounced) after hydration
+  useEffect(() => {
+    if (!hydratedRef.current) return
+    const handle = window.setTimeout(() => {
+      try {
+        const values = parameters.reduce<Record<string, any>>((acc, p) => {
+          acc[p.id] = p.value
+          return acc
+        }, {})
+        const payload = { values, currentSection }
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
+      } catch {
+        // storage write can fail (quota/disabled); ignore silently
+      }
+    }, 300)
+    return () => window.clearTimeout(handle)
+  }, [parameters, currentSection])
 
   const sections = [
     { title: 'Current Life Situation', params: parameters.slice(0, 6) },
