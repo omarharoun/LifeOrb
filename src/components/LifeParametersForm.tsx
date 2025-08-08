@@ -42,6 +42,7 @@ export default function LifeParametersForm({ onComplete }: LifeParametersFormPro
   // Persist form state per browser (anonymous-by-design)
   const STORAGE_KEY = 'lifeorb:parameters:v1'
   const hydratedRef = useRef(false)
+  const lastSavedRef = useRef<number>(0)
 
   // Load saved values on mount and merge into defaults
   useEffect(() => {
@@ -51,6 +52,7 @@ export default function LifeParametersForm({ onComplete }: LifeParametersFormPro
         const saved = JSON.parse(raw) as {
           values: Record<string, any>
           currentSection?: number
+          updatedAt?: number
         }
         if (saved && saved.values) {
           setParameters(prev => prev.map(p => ({ ...p, value: saved.values[p.id] ?? p.value })))
@@ -61,6 +63,9 @@ export default function LifeParametersForm({ onComplete }: LifeParametersFormPro
             const clamped = Math.min(Math.max(saved.currentSection!, 0), total - 1)
             return clamped
           })
+        }
+        if (saved?.updatedAt) {
+          lastSavedRef.current = saved.updatedAt
         }
       }
     } catch {
@@ -80,7 +85,9 @@ export default function LifeParametersForm({ onComplete }: LifeParametersFormPro
           acc[p.id] = p.value
           return acc
         }, {})
-        const payload = { values, currentSection }
+        const updatedAt = Date.now()
+        const payload = { values, currentSection, updatedAt }
+        lastSavedRef.current = updatedAt
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
       } catch {
         // storage write can fail (quota/disabled); ignore silently
@@ -89,11 +96,59 @@ export default function LifeParametersForm({ onComplete }: LifeParametersFormPro
     return () => window.clearTimeout(handle)
   }, [parameters, currentSection])
 
+  // Cross-tab sync: react to updates from other tabs and merge if newer
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== STORAGE_KEY || !e.newValue) return
+      try {
+        const incoming = JSON.parse(e.newValue) as {
+          values: Record<string, any>
+          currentSection?: number
+          updatedAt?: number
+        }
+        if (!incoming || typeof incoming !== 'object') return
+        if ((incoming.updatedAt ?? 0) <= (lastSavedRef.current ?? 0)) return
+        // Apply newer values
+        setParameters(prev => prev.map(p => ({ ...p, value: incoming.values?.[p.id] ?? p.value })))
+        if (typeof incoming.currentSection === 'number') {
+          const total = 3
+          const clamped = Math.min(Math.max(incoming.currentSection, 0), total - 1)
+          setCurrentSection(clamped)
+        }
+        if (incoming.updatedAt) lastSavedRef.current = incoming.updatedAt
+      } catch {
+        // ignore malformed
+      }
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
+
   const sections = [
     { title: 'Current Life Situation', params: parameters.slice(0, 6) },
     { title: 'Goals & Aspirations', params: parameters.slice(6, 10) },
     { title: 'Values & Priorities', params: parameters.slice(10) },
   ]
+
+  const resetAll = () => {
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.removeItem(STORAGE_KEY)
+      }
+    } catch {
+      // ignore
+    }
+    setCurrentSection(0)
+    setParameters(prev => prev.map(p => ({
+      ...p,
+      value:
+        p.type === 'slider'
+          ? Math.round((((p.min ?? 1) + (p.max ?? 10)) / 2))
+          : p.type === 'multiselect'
+          ? []
+          : ''
+    })))
+  }
 
   const updateParameter = (id: string, value: any) => {
     setParameters(prev => prev.map(param => 
@@ -221,7 +276,7 @@ export default function LifeParametersForm({ onComplete }: LifeParametersFormPro
 
         {/* Progress Bar */}
         <div className="mb-8">
-          <div className="flex justify-between mb-2">
+          <div className="flex justify-between items-center mb-2">
             {sections.map((section, index) => (
               <span
                 key={index}
@@ -232,6 +287,14 @@ export default function LifeParametersForm({ onComplete }: LifeParametersFormPro
                 {section.title}
               </span>
             ))}
+            <button
+              type="button"
+              onClick={resetAll}
+              className="text-xs text-gray-500 hover:text-gray-700 ml-4"
+              aria-label="Reset all answers"
+            >
+              Reset
+            </button>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
