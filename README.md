@@ -188,3 +188,24 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Built with ❤️ by the LifeOrb team**
 
 *Revolutionizing life planning through human connection and AI collaboration*
+
+---
+
+## 🤖 AI Integration (OpenRouter + DeepSeek R1)
+
+This app uses OpenRouter to access the DeepSeek R1 model for scenario generation.
+
+Setup environment variables (locally or on Vercel):
+
+- OPENROUTER_API_KEY — your OpenRouter API key
+- NEXT_PUBLIC_SITE_URL — optional, used for attribution headers
+
+Key files:
+
+- `src/utils/openrouter.ts` — lightweight client calling `https://openrouter.ai/api/v1/chat/completions`
+- `src/app/api/scenarios/route.ts` — API route that calls DeepSeek R1 and returns structured scenarios
+
+Security notes:
+
+- Do not expose your API key to the browser. Keep it server-side.
+- Consider rate limits and costs; DeepSeek R1 has per-token pricing (see OpenRouter model page).

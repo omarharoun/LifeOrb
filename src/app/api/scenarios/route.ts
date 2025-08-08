@@ -1,78 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { chatCompletion, tryExtractJson, type ChatMessage } from '@/utils/openrouter'
 
-// Mock AI scenario generation endpoint
+// AI-powered scenario generation endpoint using OpenRouter DeepSeek R1
 export async function POST(request: NextRequest) {
   try {
     const userProfile = await request.json()
-    
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    // Generate scenarios based on user profile
-    const scenarios = generateScenariosForProfile(userProfile)
-    
-    return NextResponse.json({ scenarios })
+
+    const system: ChatMessage = {
+      role: 'system',
+      content:
+        'You are LifeOrb, an AI that generates realistic life planning scenarios. Return 2-4 concise scenarios as JSON array with fields: id (kebab), title, description, probability (0-100), timeline, keyFactors (array), actionSteps (array). Keep descriptions short and practical.',
+    }
+    const user: ChatMessage = {
+      role: 'user',
+      content: `Profile: ${JSON.stringify(userProfile)}`,
+    }
+
+    const content = await chatCompletion([system, user], {
+      model: 'deepseek/deepseek-r1',
+      temperature: 0.4,
+      maxTokens: 800,
+    })
+
+    const parsed = tryExtractJson(content)
+    if (Array.isArray(parsed)) {
+      return NextResponse.json({ scenarios: parsed })
+    }
+
+    // Fallback: wrap raw text in a single scenario
+    return NextResponse.json({
+      scenarios: [
+        {
+          id: 'ai-generated-scenario',
+          title: 'AI Generated Plan',
+          description: typeof content === 'string' ? content.slice(0, 300) : 'See details',
+          probability: 70,
+          timeline: userProfile.timeline || '1-2 years',
+          keyFactors: ['AI insights', 'User parameters', 'Feasibility'],
+          actionSteps: ['Review details', 'Pick first step', 'Track progress'],
+        },
+      ],
+    })
   } catch (error) {
     return NextResponse.json({ error: 'Failed to generate scenarios' }, { status: 500 })
   }
-}
-
-function generateScenariosForProfile(profile: any) {
-  const scenarios = []
-  
-  // Career advancement scenario
-  if (profile.career_goals?.includes('Leadership Role')) {
-    scenarios.push({
-      id: 'leadership-path',
-      title: 'Leadership Advancement',
-      description: 'Accelerated path to senior leadership roles',
-      probability: Math.floor(Math.random() * 30) + 60, // 60-90%
-      timeline: profile.timeline || '2-3 years',
-      keyFactors: ['Leadership skills', 'Industry network', 'Company growth'],
-      actionSteps: [
-        'Develop strategic thinking skills',
-        'Build cross-functional relationships',
-        'Lead high-visibility projects',
-        'Seek mentorship from executives'
-      ]
-    })
-  }
-  
-  // Entrepreneurship scenario
-  if (profile.career_goals?.includes('Entrepreneurship')) {
-    scenarios.push({
-      id: 'startup-journey',
-      title: 'Entrepreneurial Success',
-      description: 'Building a successful business venture',
-      probability: Math.floor(Math.random() * 40) + 35, // 35-75%
-      timeline: profile.timeline || '1-2 years',
-      keyFactors: ['Market opportunity', 'Financial backing', 'Team building'],
-      actionSteps: [
-        'Validate market demand',
-        'Build minimum viable product',
-        'Secure initial funding',
-        'Assemble founding team'
-      ]
-    })
-  }
-  
-  // Work-life balance scenario
-  if (profile.values?.includes('Family') || profile.career_goals?.includes('Work-Life Balance')) {
-    scenarios.push({
-      id: 'balanced-growth',
-      title: 'Sustainable Growth',
-      description: 'Achieving career success while maintaining personal well-being',
-      probability: Math.floor(Math.random() * 25) + 70, // 70-95%
-      timeline: '6 months - 1 year',
-      keyFactors: ['Flexible work arrangements', 'Efficient systems', 'Support network'],
-      actionSteps: [
-        'Negotiate remote work options',
-        'Implement productivity systems',
-        'Set clear boundaries',
-        'Build support network'
-      ]
-    })
-  }
-  
-  return scenarios
 }
