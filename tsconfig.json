@@ -24,5 +24,19 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    ".next",
+    ".storybook",
+    "**/*.stories.tsx",
+    "**/*.stories.ts",
+    "**/*.stories.jsx",
+    "**/*.stories.js",
+    "**/*.stories.mdx",
+    "**/*.test.tsx",
+    "**/*.test.ts",
+    "**/*.test.jsx",
+    "**/*.test.js",
+    "**/__tests__/**"
+  ]
 }
