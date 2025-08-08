@@ -27,27 +27,22 @@ export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
 }
 
 export const Heading: React.FC<React.PropsWithChildren<HeadingProps>> = ({
-  level = 2,
-  weight = 'semibold',
+  level = 2 as HeadingLevel,
+  weight = 'semibold' as Weight,
   gradient,
   className,
   children,
   ...rest
 }) => {
-  const Tag = (`h${level}` as unknown) as keyof JSX.IntrinsicElements
-  return (
-    <Tag
-      className={[
-        headingSize[level],
-        weights[weight],
-        gradient ? 'bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-orb-500' : 'text-gray-900',
-        className || '',
-      ].join(' ')}
-      {...rest}
-    >
-      {children}
-    </Tag>
-  )
+  type TagName = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+  const Tag: TagName = (`h${level}` as TagName)
+  const cls = [
+    headingSize[level],
+    weights[weight],
+    gradient ? 'bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-orb-500' : 'text-gray-900',
+    className || '',
+  ].join(' ')
+  return React.createElement(Tag, { ...rest, className: cls }, children)
 }
 
 export interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
@@ -63,9 +58,9 @@ const textSize: Record<TextVariant, string> = {
 }
 
 export const Text: React.FC<React.PropsWithChildren<TextProps>> = ({
-  variant = 'body',
+  variant = 'body' as TextVariant,
   muted,
-  weight = 'regular',
+  weight = 'regular' as Weight,
   className,
   children,
   ...rest
