@@ -40,6 +40,17 @@ body {
   }
   
   .input-field {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all;
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all text-black placeholder:text-gray-400 bg-white;
+    color: #000; /* hard override to ensure black text */
+  }
+
+  /* Ensure selects display black text regardless of UA FieldText in light/dark */
+  select.input-field {
+    color: #000 !important;
+    background-color: #fff; /* keep light background for contrast */
+  }
+  select.input-field option {
+    color: #000;
+    background-color: #fff;
   }
 }
