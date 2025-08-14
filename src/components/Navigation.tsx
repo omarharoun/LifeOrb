@@ -7,23 +7,24 @@ interface NavigationProps {
 
 export default function Navigation({ currentStep, setCurrentStep }: NavigationProps) {
   const steps = [
-    { id: 'welcome', label: 'Welcome', icon: '🏠' },
-    { id: 'parameters', label: 'Parameters', icon: '⚙️' },
-    { id: 'simulation', label: 'Scenarios', icon: '🔮' },
-    { id: 'social', label: 'Community', icon: '🤝' },
+    { id: 'welcome', label: 'Welcome', icon: '�' },
+    { id: 'parameters', label: 'Journey', icon: '🌱' },
+    { id: 'simulation', label: 'Explore', icon: '✨' },
+    { id: 'social', label: 'Connect', icon: '🤝' },
   ]
 
   return (
-    <nav className="bg-white shadow-sm border-b">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <nav className="glass-card border-0 shadow-lg backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <div className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-orb-600 bg-clip-text text-transparent">
+            <div className="text-3xl font-bold heading-comfort mr-2">
               LifeOrb
             </div>
+            <div className="w-2 h-2 bg-gradient-to-r from-primary-500 to-orb-500 rounded-full animate-pulse-slow"></div>
           </div>
           
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center space-x-2">
             {steps.map((step, index) => {
               const isActive = currentStep === step.id
               const isCompleted = steps.findIndex(s => s.id === currentStep) > index
@@ -32,28 +33,28 @@ export default function Navigation({ currentStep, setCurrentStep }: NavigationPr
                 <button
                   key={step.id}
                   onClick={() => setCurrentStep(step.id)}
-                  className={`flex items-center px-4 py-2 rounded-lg transition-all ${
+                  className={`flex items-center px-6 py-3 rounded-2xl transition-all duration-300 font-medium ${
                     isActive
-                      ? 'bg-primary-100 text-primary-700'
+                      ? 'bg-gradient-to-r from-primary-500 to-orb-500 text-white shadow-lg transform scale-105'
                       : isCompleted
-                      ? 'text-green-600 hover:bg-green-50'
-                      : 'text-gray-500 hover:bg-gray-50'
+                      ? 'text-sage-600 hover:bg-sage-50/80 backdrop-blur-sm'
+                      : 'text-comfort/70 hover:bg-white/50 backdrop-blur-sm hover:text-comfort'
                   }`}
                 >
-                  <span className="mr-2">{step.icon}</span>
-                  <span className="font-medium">{step.label}</span>
-                  {isCompleted && <span className="ml-2 text-green-500">✓</span>}
+                  <span className="mr-3 text-lg">{step.icon}</span>
+                  <span>{step.label}</span>
+                  {isCompleted && <span className="ml-3 text-sage-500">✓</span>}
                 </button>
               )
             })}
           </div>
 
-          <div className="flex items-center space-x-4">
-            <button className="text-gray-500 hover:text-gray-700">
-              <span>💡</span>
+          <div className="flex items-center space-x-3">
+            <button className="p-3 rounded-full bg-white/50 backdrop-blur-sm text-comfort hover:bg-white/70 transition-all duration-300 hover:scale-110">
+              <span className="text-xl">💡</span>
             </button>
-            <button className="text-gray-500 hover:text-gray-700">
-              <span>❓</span>
+            <button className="p-3 rounded-full bg-white/50 backdrop-blur-sm text-comfort hover:bg-white/70 transition-all duration-300 hover:scale-110">
+              <span className="text-xl">💬</span>
             </button>
           </div>
         </div>
