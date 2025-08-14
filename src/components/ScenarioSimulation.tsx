@@ -168,7 +168,7 @@ export default function ScenarioSimulation({ userProfile, onContinue }: Scenario
           className="text-center mb-12"
         >
           <h1 className="text-4xl font-bold mb-4">Your Life Scenarios</h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-900">
             Based on your parameters, here are potential paths your life could take
           </p>
         </motion.div>
@@ -192,9 +192,9 @@ export default function ScenarioSimulation({ userProfile, onContinue }: Scenario
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4">{scenario.description}</p>
+              <p className="text-gray-900 mb-4">{scenario.description}</p>
               
-              <div className="flex items-center text-sm text-gray-500 mb-4">
+              <div className="flex items-center text-sm text-gray-900 mb-4">
                 <span>Timeline: {scenario.timeline}</span>
               </div>
 
@@ -202,7 +202,7 @@ export default function ScenarioSimulation({ userProfile, onContinue }: Scenario
                 <h4 className="font-medium mb-2">Key Factors:</h4>
                 <div className="flex flex-wrap gap-2">
                   {scenario.keyFactors.map(factor => (
-                    <span key={factor} className="bg-gray-100 px-2 py-1 rounded text-sm">
+                    <span key={factor} className="bg-gray-100 px-2 py-1 rounded text-sm text-gray-900">
                       {factor}
                     </span>
                   ))}
@@ -218,7 +218,7 @@ export default function ScenarioSimulation({ userProfile, onContinue }: Scenario
                   <div className="grid md:grid-cols-2 gap-4 mb-6">
                     <div>
                       <h4 className="font-medium text-green-700 mb-2">Positive Outcomes:</h4>
-                      <ul className="text-sm space-y-1">
+                      <ul className="text-sm space-y-1 text-gray-900">
                         {scenario.outcomes.positive.map(outcome => (
                           <li key={outcome} className="flex items-start">
                             <span className="text-green-500 mr-2">✓</span>
@@ -229,7 +229,7 @@ export default function ScenarioSimulation({ userProfile, onContinue }: Scenario
                     </div>
                     <div>
                       <h4 className="font-medium text-orange-700 mb-2">Challenges:</h4>
-                      <ul className="text-sm space-y-1">
+                      <ul className="text-sm space-y-1 text-gray-900">
                         {scenario.outcomes.challenges.map(challenge => (
                           <li key={challenge} className="flex items-start">
                             <span className="text-orange-500 mr-2">⚠</span>
@@ -242,7 +242,7 @@ export default function ScenarioSimulation({ userProfile, onContinue }: Scenario
 
                   <div>
                     <h4 className="font-medium mb-2">Recommended Action Steps:</h4>
-                    <ol className="text-sm space-y-2">
+                    <ol className="text-sm space-y-2 text-gray-900">
                       {scenario.actionSteps.map((step, index) => (
                         <li key={step} className="flex items-start">
                           <span className="bg-primary-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-3 mt-0.5">

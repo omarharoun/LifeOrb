@@ -1,13 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   images: {
     domains: ['localhost'],
   },
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    // Next expects env values to be strings at build-time; provide a default empty string
+    CUSTOM_KEY: process.env.CUSTOM_KEY || '',
   },
 }
 

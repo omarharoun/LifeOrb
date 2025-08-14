@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { Button, Card } from './ui'
 
 interface HeroProps {
   onGetStarted: () => void
@@ -8,8 +9,13 @@ interface HeroProps {
 
 export default function Hero({ onGetStarted }: HeroProps) {
   return (
+<<<<<<< HEAD
     <div className="min-h-screen flex items-center justify-center px-4 relative">
       <div className="max-w-5xl mx-auto text-center relative z-10">
+=======
+  <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="max-w-4xl mx-auto text-center">
+>>>>>>> 9413f88596b7057098f8cc5cd68e298f877e5f00
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -65,6 +71,7 @@ export default function Hero({ onGetStarted }: HeroProps) {
           transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
           className="grid md:grid-cols-3 gap-10 mb-16"
         >
+<<<<<<< HEAD
           <motion.div 
             className="card group cursor-pointer"
             whileHover={{ scale: 1.05 }}
@@ -103,6 +110,34 @@ export default function Hero({ onGetStarted }: HeroProps) {
               offer support, and grow together in meaningful community.
             </p>
           </motion.div>
+=======
+          <Card>
+            <div className="text-4xl mb-4">🎯</div>
+            <h3 className="text-xl font-semibold mb-2">Set Your Parameters</h3>
+            <p className="text-gray-600">
+              Define your current life situation and goals anonymously. 
+              No emails, no personal data - just your aspirations.
+            </p>
+          </Card>
+          
+          <Card>
+            <div className="text-4xl mb-4">🤖</div>
+            <h3 className="text-xl font-semibold mb-2">AI Simulation</h3>
+            <p className="text-gray-600">
+              Explore possible life scenarios based on your parameters. 
+              See potential outcomes and paths to your goals.
+            </p>
+          </Card>
+          
+          <Card>
+            <div className="text-4xl mb-4">🤝</div>
+            <h3 className="text-xl font-semibold mb-2">Human Connection</h3>
+            <p className="text-gray-600">
+              Connect with others on similar journeys. Share experiences, 
+              collaborate, and achieve goals together.
+            </p>
+          </Card>
+>>>>>>> 9413f88596b7057098f8cc5cd68e298f877e5f00
         </motion.div>
 
         <motion.div
@@ -111,6 +146,7 @@ export default function Hero({ onGetStarted }: HeroProps) {
           transition={{ duration: 1, delay: 0.7, ease: "easeOut" }}
           className="space-y-6"
         >
+<<<<<<< HEAD
           <motion.button
             onClick={onGetStarted}
             className="btn-primary text-2xl px-16 py-5 relative overflow-hidden group"
@@ -123,6 +159,11 @@ export default function Hero({ onGetStarted }: HeroProps) {
           </motion.button>
           <p className="text-sm text-comfort/60 leading-relaxed">
             🌿 Completely Anonymous • 🔒 No Registration Required • 🤖 AI-Powered Insights
+=======
+          <Button onClick={onGetStarted} size="lg" className="px-12">Start Your Journey</Button>
+          <p className="text-sm text-gray-500 mt-4">
+            100% Anonymous • No Registration Required • AI-Powered
+>>>>>>> 9413f88596b7057098f8cc5cd68e298f877e5f00
           </p>
         </motion.div>
       </div>
