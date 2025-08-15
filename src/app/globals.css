@@ -69,10 +69,19 @@ body {
   }
   
   .input-field {
-<<<<<<< HEAD
-    @apply w-full px-6 py-4 border-2 border-warm-300/50 rounded-2xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-inner placeholder:text-gray-400;
+    @apply w-full px-6 py-4 border-2 border-warm-300/50 rounded-2xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-inner placeholder:text-gray-400 text-black;
   }
-  
+
+  /* Ensure selects display black text regardless of UA FieldText in light/dark */
+  select.input-field {
+    color: #000 !important;
+    background-color: #fff; /* keep light background for contrast */
+  }
+  select.input-field option {
+    color: #000;
+    background-color: #fff;
+  }
+
   .glass-card {
     @apply bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl;
   }
@@ -87,19 +96,5 @@ body {
   
   .heading-comfort {
     @apply bg-gradient-to-r from-primary-600 via-orb-600 to-sage-600 bg-clip-text text-transparent;
-=======
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all text-black placeholder:text-gray-400 bg-white;
-    color: #000; /* hard override to ensure black text */
-  }
-
-  /* Ensure selects display black text regardless of UA FieldText in light/dark */
-  select.input-field {
-    color: #000 !important;
-    background-color: #fff; /* keep light background for contrast */
-  }
-  select.input-field option {
-    color: #000;
-    background-color: #fff;
->>>>>>> 9413f88596b7057098f8cc5cd68e298f877e5f00
   }
 }

@@ -14,7 +14,6 @@ const poppins = Poppins({
   variable: '--font-poppins',
   display: 'swap',
 })
-``
 export const metadata: Metadata = {
   title: 'LifeOrb - Where Dreams Meet Reality',
   description: 'A sanctuary where human wisdom meets AI insight. Connect with kindred spirits, explore life possibilities, and nurture your dreams in a compassionate community.',
