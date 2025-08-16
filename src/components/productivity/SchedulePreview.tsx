@@ -8,7 +8,6 @@ export default function SchedulePreview() {
   const { tasks, constraints, setSchedule } = useProductivityStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [useAI, setUseAI] = useState(true)
   const [aiInsights, setAiInsights] = useState<string>('')
 
   const requestSchedule = async () => {
@@ -17,7 +16,7 @@ export default function SchedulePreview() {
       const res = await fetch('/api/productivity/schedule', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tasks, constraints, useAI }),
+        body: JSON.stringify({ tasks, constraints, useAI: true }),
       })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json() as { events: ScheduleEvent[], unscheduled: any[], aiInsights?: string }
@@ -35,22 +34,14 @@ export default function SchedulePreview() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></div>
-          <h3 className="text-lg font-semibold text-slate-100">Schedule Timeline</h3>
+          <h3 className="text-lg font-semibold text-slate-100">AI-Powered Schedule Timeline</h3>
           <div className="flex-1 h-px bg-gradient-to-r from-slate-600 to-transparent hidden sm:block"></div>
         </div>
         
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 bg-slate-900/50 rounded-lg p-2">
-            <input 
-              type="checkbox" 
-              id="useAI" 
-              checked={useAI} 
-              onChange={(e) => setUseAI(e.target.checked)}
-              className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-            />
-            <label htmlFor="useAI" className="text-sm text-slate-300 cursor-pointer">
-              🤖 AI Optimization
-            </label>
+            <span className="text-purple-400">🤖</span>
+            <span className="text-sm text-slate-300">AI Optimized</span>
           </div>
           
           <button 

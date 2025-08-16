@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const tasks = (body?.tasks || []) as TaskItem[]
     const constraints = (body?.constraints) as Constraints
-    const useAI = body?.useAI || false
+    const useAI = body?.useAI !== false // Default to true, only false if explicitly set
     
     if (!Array.isArray(tasks) || !constraints) {
       return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
