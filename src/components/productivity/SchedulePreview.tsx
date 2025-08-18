@@ -231,7 +231,7 @@ function ScheduleCalendar() {
                 </div>
                 
                 <div className="space-y-2">
-                  {dayEvents.slice(0, 3).map(event => {
+                  {dayEvents.map((event, index) => {
                     const progress = getTimeProgress(event.start, event.end)
                     const isActive = progress > 0 && progress < 100
                     
@@ -256,12 +256,6 @@ function ScheduleCalendar() {
                       </div>
                     )
                   })}
-                  
-                  {dayEvents.length > 3 && (
-                    <div className="text-xs text-slate-500 text-center py-1">
-                      +{dayEvents.length - 3} more events
-                    </div>
-                  )}
                 </div>
               </div>
             )

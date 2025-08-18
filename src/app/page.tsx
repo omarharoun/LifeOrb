@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import TaskForm from '@/components/productivity/TaskForm'
 import TaskList from '@/components/productivity/TaskList'
 import SchedulePreview from '@/components/productivity/SchedulePreview'
@@ -10,6 +10,30 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<'tasks' | 'schedule' | 'analytics'>('tasks')
   const tasks = useProductivityStore(s => s.tasks)
   const schedule = useProductivityStore(s => s.schedule)
+  const constraints = useProductivityStore(s => s.constraints)
+  const setSchedule = useProductivityStore(s => s.setSchedule)
+
+  // Auto-generate schedule when switching to schedule view
+  const handleTabChange = async (tab: 'tasks' | 'schedule' | 'analytics') => {
+    setActiveTab(tab)
+    
+    if (tab === 'schedule' && tasks.length > 0 && schedule.length === 0) {
+      // Auto-generate schedule if no schedule exists and there are tasks
+      try {
+        const res = await fetch('/api/productivity/schedule', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tasks, constraints, useAI: true }),
+        })
+        if (res.ok) {
+          const data = await res.json()
+          setSchedule(data.events || [], data.unscheduled || [])
+        }
+      } catch (error) {
+        console.error('Failed to auto-generate schedule:', error)
+      }
+    }
+  }
 
   const stats = {
     totalTasks: tasks.length,
@@ -64,7 +88,7 @@ export default function Home() {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => handleTabChange(tab.id as any)}
                 className={`flex items-center space-x-2 px-3 sm:px-6 py-2 sm:py-3 rounded-t-lg transition-all duration-200 whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'bg-slate-800 text-white border-b-2 border-blue-500'

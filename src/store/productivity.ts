@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { Constraints, ScheduleEvent, TaskItem } from '@/types/productivity'
 import { v4 as uuid } from 'uuid'
 
@@ -32,17 +33,29 @@ const defaultConstraints: Constraints = {
   bufferMinutes: 5,
 }
 
-export const useProductivityStore = create<ProductivityState>((set) => ({
-  tasks: [],
-  constraints: defaultConstraints,
-  schedule: [],
-  unscheduled: [],
-  addTask: (t) => set((s) => ({ tasks: [...s.tasks, { id: uuid(), ...t }] })),
-  removeTask: (id) => set((s) => ({ tasks: s.tasks.filter(t => t.id !== id) })),
-  updateTask: (id, updates) => set((s) => ({ 
-    tasks: s.tasks.map(t => t.id === id ? { ...t, ...updates } : t)
-  })),
-  setConstraints: (c) => set((s) => ({ constraints: { ...s.constraints, ...c } })),
-  setSchedule: (events, unscheduled) => set({ schedule: events, unscheduled }),
-  reset: () => set({ tasks: [], schedule: [], unscheduled: [] }),
-}))
+export const useProductivityStore = create<ProductivityState>()(
+  persist(
+    (set) => ({
+      tasks: [],
+      constraints: defaultConstraints,
+      schedule: [],
+      unscheduled: [],
+      addTask: (t) => set((s) => ({ tasks: [...s.tasks, { id: uuid(), ...t }] })),
+      removeTask: (id) => set((s) => ({ tasks: s.tasks.filter(t => t.id !== id) })),
+      updateTask: (id, updates) => set((s) => ({ 
+        tasks: s.tasks.map(t => t.id === id ? { ...t, ...updates } : t)
+      })),
+      setConstraints: (c) => set((s) => ({ constraints: { ...s.constraints, ...c } })),
+      setSchedule: (events, unscheduled) => set({ schedule: events, unscheduled }),
+      reset: () => set({ tasks: [], schedule: [], unscheduled: [] }),
+    }),
+    {
+      name: 'lifeorb-productivity',
+      // Only persist tasks and constraints, not schedule (regenerate on load)
+      partialize: (state) => ({
+        tasks: state.tasks,
+        constraints: state.constraints,
+      }),
+    }
+  )
+)
